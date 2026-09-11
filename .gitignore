@@ -1,0 +1,12 @@
+# credenciais — nunca versionar
+.env
+.env.*
+!.env.example
+
+# vinculação local com a Vercel (contém orgId/projectId da SUA conta)
+.vercel
+
+node_modules
+*.log
+.DS_Store
+Thumbs.db

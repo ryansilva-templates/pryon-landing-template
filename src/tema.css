@@ -1,0 +1,287 @@
+/* ============================================================================
+   RITUAL DA PELE — sistema visual (tokens, base, herói, oferta, botões)
+   ----------------------------------------------------------------------------
+   Reescrito do zero em 30/08/2026. O que existia antes era a cara de landing
+   page gerada por IA: 42 gradientes, 25 animações infinitas, glassmorphism,
+   orbes girando no fundo e um card para cada frase. Nada disso vende; só faz
+   a marca parecer improvisada.
+
+   As regras deste arquivo:
+     - UM acento. O rosa aparece no que é clicável e em quase nada mais.
+     - Superfície é branco com fio de 1px. Sombra só onde há elevação real
+       (barra fixa e modal). Gradiente só no selo de desconto.
+     - Hierarquia vem de tamanho, peso e espaço — não de cor e caixa.
+     - Movimento só onde comunica: carrossel e o revelar de entrada.
+
+   NAMESPACE `r-`: as classes novas não colidem com base.css/add.css, que
+   continuam no build APENAS para o checkout. Os cinco ganchos que o app.js
+   exige (.of-kit .sk-kit .stickycta .buycta [data-open-checkout]) mantêm o
+   nome antigo e são reestilizados aqui.
+   ============================================================================ */
+
+:root{
+  /* base neutra quente — papel, não branco de escritório */
+  --pp:#FAF7F5;        /* fundo da página */
+  --sf:#FFFFFF;        /* superfície de card */
+  --sf2:#F4EFEC;       /* superfície secundária */
+  --ln:#E9E1DD;        /* fio de 1px */
+  --ln2:#D8CCC6;       /* fio mais marcado */
+
+  /* texto */
+  --t1:#1E1218;        /* títulos */
+  --t2:#54444C;        /* corpo */
+  --t3:#736570;        /* meta, legendas — 4,81:1 no pior fundo (sf2). O #867680
+                          inicial dava 3,74 e reprovava o AA em 51 elementos. */
+
+  /* acento único */
+  --rs:#B0446E;        /* rosa de texto e de botão — 5,2:1 no branco */
+  --rs-d:#8B2F55;      /* pressionado / fim de gradiente */
+  --rs-w:#FBF2F5;      /* lavado, para tarja e chip */
+  --rs-ln:#F0DCE4;     /* fio no tom do acento */
+
+  --au:#8A6524;        /* estrela — ouro fosco, 4,9:1 */
+  --gr:#1F6B45;        /* confirmação */
+
+  --dsp:'Fraunces',Georgia,serif;
+  --txt:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
+
+  --wrap:1120px;
+  --r:14px;            /* raio padrão */
+  --r-sm:10px;
+}
+
+/* ---------------- reset e base ---------------- */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--pp);color:var(--t2);
+  font-family:var(--txt);font-size:16px;line-height:1.65;font-weight:450;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+img,video,svg{max-width:100%;display:block}
+img,video{height:auto}          /* width/height no HTML não podem vencer o CSS */
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3,h4,p,ul,ol,figure,blockquote{margin:0}
+ul,ol{padding:0;list-style:none}
+a{color:inherit}
+
+.r-wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:20px}
+@media(min-width:768px){.r-wrap{padding-inline:32px}}
+
+.sr,.r-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+.skip{position:absolute;left:-9999px;top:0;z-index:200;background:var(--t1);color:#fff;
+  padding:12px 18px;border-radius:0 0 var(--r-sm) 0;font-weight:700;font-size:14px}
+.skip:focus{left:0}
+
+:focus-visible{outline:2.5px solid var(--rs);outline-offset:2px;border-radius:4px}
+
+/* ---------------- tipografia ---------------- */
+.r-h1{
+  font-family:var(--dsp);font-weight:500;color:var(--t1);
+  font-size:clamp(30px,7.4vw,53px);line-height:1.06;letter-spacing:-.021em;
+}
+.r-h2{
+  font-family:var(--dsp);font-weight:500;color:var(--t1);
+  font-size:clamp(25px,5.1vw,39px);line-height:1.12;letter-spacing:-.018em;
+}
+.r-h3{font-family:var(--txt);font-weight:700;color:var(--t1);font-size:17.5px;
+  line-height:1.35;letter-spacing:-.008em}
+.r-lead{font-size:clamp(15.5px,2.1vw,18px);line-height:1.6;color:var(--t3);max-width:56ch}
+.r-eyebrow{
+  display:inline-block;font-size:11.5px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.15em;color:var(--rs);margin-bottom:14px;
+}
+.r-h1 em,.r-h2 em{font-style:italic;color:var(--rs)}
+
+/* ---------------- ritmo das seções ---------------- */
+.r-sec{padding-block:clamp(52px,8vw,92px)}
+.r-sec--sf{background:var(--sf);border-block:1px solid var(--ln)}
+.r-head{margin-bottom:clamp(30px,4.4vw,48px);max-width:62ch}
+.r-head .r-lead{margin-top:12px}
+.r-head--mid{margin-inline:auto;text-align:center}
+.r-head--mid .r-lead{margin-inline:auto}
+
+/* ---------------- barra de aviso + cabeçalho ---------------- */
+.r-announce{background:var(--t1);color:#F3EAEE;font-size:12.5px;font-weight:600}
+.r-announce .r-wrap{display:flex;justify-content:center;align-items:center;
+  min-height:38px;padding-block:8px;text-align:center}
+.tb-rot{position:relative;display:grid}
+.tb-item{grid-area:1/1;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  opacity:0;transition:opacity .45s ease;pointer-events:none}
+.tb-item.on{opacity:1}
+.tb-item b{font-weight:800;color:#fff}
+.tb-item .ic{width:15px;height:15px;flex:none;color:var(--rs-w);opacity:.9}
+
+.r-mast{position:sticky;top:0;z-index:50;background:rgba(250,247,245,.92);
+  border-bottom:1px solid var(--ln)}
+@supports(backdrop-filter:blur(8px)){.r-mast{backdrop-filter:blur(8px)}}
+.r-mast .r-wrap{display:flex;align-items:center;justify-content:space-between;
+  min-height:58px;gap:20px}
+.r-brand{font-family:var(--dsp);font-weight:600;font-size:21px;color:var(--t1);
+  letter-spacing:-.02em;text-decoration:none}
+.r-brand span{color:var(--rs)}
+.r-navlinks{display:none;align-items:center;gap:30px}
+@media(min-width:900px){.r-navlinks{display:flex}}
+.r-navlinks a{font-size:14px;font-weight:600;color:var(--t2);text-decoration:none;
+  padding-block:6px;border-bottom:1.5px solid transparent;transition:color .18s,border-color .18s}
+.r-navlinks a:hover{color:var(--rs);border-bottom-color:var(--rs)}
+.r-mast-cta{font-size:13.5px;font-weight:700;color:var(--rs);text-decoration:none;
+  border:1.5px solid var(--rs-ln);border-radius:100px;padding:9px 17px;
+  min-height:40px;display:inline-flex;align-items:center;
+  transition:background .18s,border-color .18s}
+.r-mast-cta:hover{background:var(--rs-w);border-color:var(--rs)}
+
+/* ============================================================================
+   PRIMEIRA DOBRA
+   No celular a ordem é: foto -> nota -> título -> preço -> kits -> comprar.
+   A foto vem primeiro porque é ela que diz "isto é um produto de verdade" antes
+   de qualquer texto; o botão entra antes da dobra, sem depender da barra fixa.
+   ============================================================================ */
+.r-hero{padding-top:clamp(26px,4vw,46px);padding-bottom:clamp(44px,6vw,76px)}
+.r-hero-grid{display:grid;gap:clamp(26px,4vw,56px);align-items:start}
+@media(min-width:940px){
+  .r-hero-grid{grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);gap:64px}
+  .r-hero-media{position:sticky;top:78px}
+}
+
+/* --- foto do produto --- */
+.r-shot{position:relative;background:var(--sf);border:1px solid var(--ln);
+  border-radius:var(--r);overflow:hidden}
+.r-shot img{width:100%;aspect-ratio:1/1;object-fit:contain;padding:clamp(6px,1.6vw,18px)}
+.r-shot-tag{position:absolute;top:14px;left:14px;display:inline-flex;align-items:baseline;gap:6px;
+  background:linear-gradient(135deg,var(--rs),var(--rs-d));color:#fff;
+  border-radius:100px;padding:7px 14px;box-shadow:0 2px 10px rgba(139,47,85,.22)}
+.r-shot-tag b{font-size:15px;font-weight:800;letter-spacing:-.01em}
+.r-shot-tag span{font-size:10.5px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.09em;opacity:.92}
+
+.r-thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.r-thumb{background:var(--sf);border:1px solid var(--ln);border-radius:var(--r-sm);
+  padding:10px 8px;text-align:center}
+.r-thumb img{width:100%;height:62px;object-fit:contain;margin-bottom:6px}
+.r-thumb span{font-size:10.5px;font-weight:700;color:var(--t3);line-height:1.3;display:block}
+
+/* --- nota --- */
+.r-rate{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:13.5px;
+  color:var(--t3);font-weight:600;margin-bottom:16px}
+.r-stars{display:inline-flex;gap:2px;color:var(--au)}
+.r-stars .ic{width:15px;height:15px}
+.r-rate b{color:var(--t1);font-weight:800;font-size:14.5px}
+
+.r-h1+.r-sub{margin-top:16px}
+.r-sub{font-size:clamp(15px,2vw,17px);line-height:1.62;color:var(--t2);max-width:52ch}
+.r-sub b{color:var(--t1);font-weight:700}
+
+/* --- preço --- */
+.r-price{margin-top:26px;padding-top:24px;border-top:1px solid var(--ln)}
+.r-price-kit{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--t3);display:block;margin-bottom:8px}
+.r-price-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.r-price-now{font-family:var(--dsp);font-size:clamp(38px,8vw,50px);font-weight:600;
+  color:var(--t1);line-height:1;letter-spacing:-.028em;font-variant-numeric:tabular-nums}
+.r-price-old{font-size:17px;color:var(--t3);text-decoration:line-through;
+  text-decoration-thickness:1.5px;font-weight:500;font-variant-numeric:tabular-nums}
+.r-price-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.r-chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;
+  color:var(--t2);background:var(--sf2);border-radius:100px;padding:6px 13px}
+.r-chip .ic{width:14px;height:14px;color:var(--rs);flex:none}
+.r-chip--rs{background:var(--rs-w);color:var(--rs)}
+
+/* --- brinde --- */
+.r-gift{display:flex;align-items:center;gap:14px;margin-top:20px;padding:14px;
+  background:var(--rs-w);border:1px solid var(--rs-ln);border-radius:var(--r)}
+.r-gift img{width:60px;height:60px;object-fit:contain;flex:none}
+.r-gift-b{flex:1;min-width:0}
+.r-gift-tag{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--rs);display:block;margin-bottom:3px}
+/* .r-gift p (0,1,1) vence .r-gift-nome (0,1,0) e encolhia o nome do brinde
+   para 12,5px cinza. Sobe a especificidade para casar. */
+.r-gift p.r-gift-nome{font-family:var(--txt);font-size:14.5px;font-weight:700;
+  color:var(--t1);line-height:1.3;margin-top:0}
+/* Linha "para quem é": a primeira coisa que a leitora precisa reconhecer. */
+.r-forwho{font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.11em;
+  color:var(--rs);margin-bottom:10px}
+.r-gift p{font-size:12.5px;color:var(--t3);margin-top:3px;line-height:1.45}
+.r-gift-free{flex:none;align-self:flex-start;font-size:10.5px;font-weight:800;letter-spacing:.08em;
+  color:#fff;background:var(--rs);border-radius:100px;padding:5px 11px}
+
+/* ============================================================================
+   SELETOR DE KITS  —  #ofKits e .of-kit são ganchos do app.js, o nome fica
+   ============================================================================ */
+.r-kits{margin-top:26px}
+.r-kits-lbl{font-size:12.5px;font-weight:700;color:var(--t3);display:block;margin-bottom:11px}
+#ofKits{display:flex;flex-direction:column;gap:10px}
+
+#ofKits .of-kit{
+  position:relative;display:grid;grid-template-columns:auto auto 1fr auto;
+  align-items:center;gap:13px;width:100%;text-align:left;cursor:pointer;
+  background:var(--sf);border:1.5px solid var(--ln);border-radius:var(--r);
+  padding:15px 16px;min-height:74px;
+  transition:border-color .18s,background .18s;
+  box-shadow:none;font-family:var(--txt);
+}
+#ofKits .of-kit:hover{border-color:var(--ln2)}
+#ofKits .of-kit.on{border-color:var(--rs);background:var(--rs-w)}
+
+#ofKits .of-kit .radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--ln2);
+  flex:none;position:relative;transition:border-color .18s;background:var(--sf)}
+#ofKits .of-kit.on .radio{border-color:var(--rs)}
+#ofKits .of-kit.on .radio::after{content:"";position:absolute;inset:3.5px;border-radius:50%;
+  background:var(--rs)}
+
+#ofKits .of-kit .imgs{display:flex;align-items:center}
+#ofKits .of-kit .imgs img{width:30px;height:40px;object-fit:contain;margin-right:-11px;
+  filter:drop-shadow(0 1px 2px rgba(30,18,24,.10))}
+#ofKits .of-kit .imgs img:last-child{margin-right:0}
+
+#ofKits .of-kit .kinfo{min-width:0}
+#ofKits .of-kit .kname{display:block;font-size:14.5px;font-weight:700;color:var(--t1);line-height:1.25}
+#ofKits .of-kit .kper{display:block;font-size:12px;color:var(--t3);font-weight:500;
+  line-height:1.35;margin-top:2px}
+#ofKits .of-kit .kprice{text-align:right}
+#ofKits .of-kit .kprice b{display:block;font-size:17px;font-weight:800;color:var(--t1);
+  letter-spacing:-.015em;font-variant-numeric:tabular-nums}
+#ofKits .of-kit.on .kprice b{color:var(--rs)}
+#ofKits .of-kit .kprice s{display:block;font-size:11.5px;color:var(--t3);font-weight:500;
+  font-variant-numeric:tabular-nums}
+#ofKits .of-kit .tag{position:absolute;top:-9px;right:14px;font-size:9.5px;font-weight:800;
+  letter-spacing:.1em;color:#fff;background:var(--rs);border-radius:100px;padding:3px 10px}
+
+/* --- estoque --- */
+.r-stock{display:flex;align-items:flex-start;gap:10px;margin-top:18px;padding:13px 15px;
+  background:var(--sf2);border-radius:var(--r-sm);font-size:13px;line-height:1.5;color:var(--t2)}
+.r-stock .ic{width:16px;height:16px;color:var(--rs);flex:none;margin-top:2px}
+.r-stock b{color:var(--t1);font-weight:700}
+
+/* ============================================================================
+   BOTÕES  —  .buycta e [data-open-checkout] são ganchos do app.js
+   Cor sólida. O gradiente do CTA principal era o item que mais gritava
+   "template" e ainda reprovava contraste na ponta clara.
+   ============================================================================ */
+.r-cta{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  width:100%;min-height:56px;padding:16px 28px;cursor:pointer;
+  font-family:var(--txt);font-size:16.5px;font-weight:800;letter-spacing:-.005em;
+  color:#fff;background:var(--rs);border:none;border-radius:var(--r-sm);
+  text-decoration:none;transition:background .18s,transform .08s;
+  box-shadow:0 1px 2px rgba(139,47,85,.18);
+}
+.r-cta:hover{background:var(--rs-d)}
+.r-cta:active{transform:translateY(1px)}
+.r-cta--lg{min-height:60px;font-size:17.5px}
+@media(min-width:640px){.r-cta{width:auto;min-width:300px}}
+.r-cta-note{margin-top:11px;font-size:12.5px;font-weight:600;color:var(--t3);text-align:center}
+@media(min-width:640px){.r-hero .r-cta-note{text-align:left}}
+.r-cta-wrap{margin-top:20px}
+.r-cta-wrap--mid{text-align:center}
+.r-cta-wrap--mid .r-cta-note{text-align:center}
+
+/* --- fiadores sob o botão --- */
+.r-assure{display:grid;grid-template-columns:repeat(2,1fr);gap:11px 16px;margin-top:22px;
+  padding-top:20px;border-top:1px solid var(--ln)}
+@media(min-width:520px){.r-assure{grid-template-columns:repeat(4,1fr)}}
+.r-assure div{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;
+  color:var(--t2);line-height:1.3}
+.r-assure .ic{width:16px;height:16px;color:var(--gr);flex:none}

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="{{seo.lang}}" class="nojs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>{{seo.titulo}}</title>
+<meta name="description" content="{{seo.descricao}}">
+<meta name="theme-color" content="{{seo.themeColor}}">
+<link rel="canonical" href="{{seo.dominio}}/">
+<meta property="og:type" content="{{seo.ogTipo}}">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="{{seo.ogTitulo}}">
+<meta property="og:description" content="{{seo.ogDescricao}}">
+<meta property="og:image" content="{{seo.dominio}}/{{seo.ogImagem}}">
+<meta property="og:image:width" content="{{seo.ogImagemW}}">
+<meta property="og:image:height" content="{{seo.ogImagemH}}">
+<meta property="og:url" content="{{seo.dominio}}/">
+<meta property="og:site_name" content="{{seo.siteName}}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="{{hero.imagem.src}}" imagesrcset="{{hero.imagem.src480}} 480w, {{hero.imagem.src760}} 760w, {{hero.imagem.src1160}} 1160w" imagesizes="(min-width:940px) 520px, 92vw" fetchpriority="high">
+<link rel="stylesheet" href="public/fonts.css">
+
+<!-- Meta Pixel -->
+<script>
+/* MÁQUINA DE DESENVOLVIMENTO NÃO GERA EVENTO.
+   Sem esta trava, abrir a página no dev-server.js manda PageView, ViewContent e
+   InitiateCheckout DE VERDADE para a conta — evento de teste misturado com o
+   funil real, no mesmo histórico que um analista da Meta pode acabar lendo.
+
+   A lista é fechada de propósito. NAO barre .vercel.app (sem crase): a produção
+   roda em um subdomínio .vercel.app e isso mataria o tracking real.
+
+   O sinal fica em window.HB_LOCAL porque app.js precisa dele também — lá saem
+   os outros dois caminhos de envio (px() e o PageView de servidor). */
+window.HB_LOCAL = ['localhost','127.0.0.1','[::1]','::1'].indexOf(location.hostname) !== -1;
+if(!window.HB_LOCAL){
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','{{tracking.metaPixelId}}');
+}
+/* O PageView sai daqui com um event_id guardado em window.__pvId. O mesmo id é
+   reenviado pelo servidor em /api/capi, e a Meta conta as duas pontas como um
+   evento só. Sem o id, o par viraria dois PageViews. */
+window.__pvId = (function(){
+  try{ if(crypto && crypto.randomUUID) return crypto.randomUUID(); }catch(e){}
+  return 'pv' + Date.now().toString(36) + Math.random().toString(36).slice(2,10);
+})();
+if(!window.HB_LOCAL) fbq('track','PageView',{},{ eventID: window.__pvId });
+</script>
+<noscript><img height="1" width="1" style="display:none" alt=""
+src="https://www.facebook.com/tr?id={{tracking.metaPixelId}}&ev=PageView&noscript=1"></noscript>
+
+{{#if tracking.utmify}}<!-- UTMify -->
+<script src="https://cdn.utmify.com.br/scripts/utms/latest.js" data-utmify-prevent-xcod-sck data-utmify-prevent-subids async defer></script>
+{{/if}}
+<!-- Captura de UTMs / click ids: guarda na 1a visita e injeta em todo link externo -->
+<script>
+(function(){
+  var KEYS=['utm_source','utm_medium','utm_campaign','utm_content','utm_term',
+            'placement','site_source_name','fbclid','gclid','ttclid','msclkid','sck','src'];
+  var STORE='{{tracking.storagePrefix}}_utms';
+  var JANELA={{tracking.janelaAtribuicaoDias}}*24*60*60*1000; /* mesma janela de clique padrão da Meta */
+  function load(){
+    try{
+      var g=JSON.parse(localStorage.getItem(STORE)||'null');
+      if(!g) return {};
+      /* Atribuição vencida vira atribuição errada: depois da janela o clique já
+         não conta para o anúncio, e continuar mandando a UTM velha suja o
+         relatório com venda orgânica creditada à campanha. */
+      if(g.__t && (Date.now()-g.__t) > JANELA){ localStorage.removeItem(STORE); return {}; }
+      delete g.__t; return g;
+    }catch(e){ return {}; }
+  }
+  var q=new URLSearchParams(location.search),found={},has=false;
+  KEYS.forEach(function(k){var v=q.get(k);if(v){found[k]=v;has=true}});
+  var utms=load();
+  if(has){
+    /* Clique novo SUBSTITUI o anterior, não mistura. Antes era Object.assign
+       sobre o que estava guardado: quem chegasse pela campanha B sem utm_medium
+       herdava o "cpc" da campanha A, e a venda ia para a campanha errada. */
+    utms=found;
+    try{
+      var salvar=Object.assign({},found,{__t:Date.now()});
+      localStorage.setItem(STORE,JSON.stringify(salvar));
+      sessionStorage.setItem(STORE,JSON.stringify(salvar));
+    }catch(e){}
+    /* A UTMify guarda cada UTM em uma chave própria (utm_source, utm_content…)
+       com validade própria, e só sobrescreve as que vierem na URL nova. Quem
+       chega hoje pela campanha B, sem utm_content, fica com o utm_content da
+       campanha A da semana passada — e a venda aparece no criativo errado no
+       relatório dela, enquanto a Meta credita o clique de verdade.
+
+       Aqui a gente apaga as sobras ANTES de o script dela rodar (ele é async
+       defer; este bloco é inline no head, então roda primeiro). Só mexemos nas
+       chaves utm_* que NÃO vieram neste clique — as do clique atual a UTMify
+       escreve normalmente. Nada mais do storage dela é tocado. */
+    try{
+      ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','utm_id'].forEach(function(k){
+        if(found[k]) return;
+        localStorage.removeItem(k);
+        localStorage.removeItem(k+'_exp');
+      });
+    }catch(e){}
+  }
+  window.HB_TRACKING=function(){return utms};
+  function decorate(){
+    var qs=Object.keys(utms);if(!qs.length)return;
+    document.querySelectorAll('a[href^="http"]').forEach(function(a){
+      try{var u=new URL(a.href,location.href);
+        if(u.host===location.host&&u.pathname===location.pathname)return;
+        qs.forEach(function(k){if(!u.searchParams.has(k))u.searchParams.set(k,utms[k])});
+        a.href=u.toString();
+      }catch(e){}
+    });
+  }
+  if(document.readyState!=='loading')decorate();else document.addEventListener('DOMContentLoaded',decorate);
+})();
+</script>
+<style>

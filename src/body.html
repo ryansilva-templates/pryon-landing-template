@@ -1,0 +1,387 @@
+<!-- ============================================================================
+     CORPO DA PÁGINA — A ESTRUTURA (o "DNA" do template)
+     ----------------------------------------------------------------------------
+     Este arquivo é ESTRUTURA, não conteúdo. Todo texto, imagem e preço vem de
+     `config/produto.js` através dos campos entre chaves duplas. Se você precisou escrever uma
+     frase aqui, o campo está faltando no config.
+
+     A ORDEM DAS SEÇÕES É UMA DECISÃO DE CONVERSÃO, não estética. Está
+     documentada em docs/ESTRUTURA.md, com o porquê de cada posição. Trocar de
+     lugar é uma escolha deliberada — não faça por acaso.
+
+     OS 5 GANCHOS QUE O app.js EXIGE E QUE NENHUM REDESIGN PODE RENOMEAR:
+       .of-kit  (+ data-i / data-offer / data-price / data-old)
+       .sk-kit[data-idx]  com um <b> dentro
+       .stickycta
+       .buycta        <- só em botão de compra DENTRO do conteúdo
+       [data-open-checkout]
+     Mais os IDs de sincronia de preço:
+       hero-price, hero-old, hero-kit, disc-badge, perday-txt, cmp-price
+     ============================================================================ -->
+
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+<!-- ================= BARRA DE AVISO (rotativa) =================
+     Primeira coisa que aparece. Não vende: remove atrito antes de a pessoa
+     começar a ler (frete, garantia, forma de pagamento). -->
+<div class="r-announce"><div class="r-wrap">
+  <div class="tb-rot" aria-hidden="true">
+{{#each anuncio}}    <span class="tb-item {{#if @first}}on{{/if}}"><svg class="ic"><use href="#i-{{icone}}"></use></svg> <b>{{forte}}</b> {{texto}}</span>
+{{/each}}  </div>
+  <p class="sr">{{$.anuncioSr}}</p>
+</div></div>
+
+<!-- ================= CABEÇALHO =================
+     Fica sticky. O CTA do cabeçalho não abre o checkout: leva para a oferta,
+     porque quem clica no topo ainda não escolheu o kit. -->
+<header class="r-mast"><div class="r-wrap">
+  <a class="r-brand" href="#oferta">{{marca.nome}}<span>{{marca.ponto}}</span></a>
+  <nav class="r-navlinks" aria-label="Principal">
+{{#each nav}}    <a href="{{href}}">{{label}}</a>
+{{/each}}  </nav>
+  <a class="r-mast-cta" href="#oferta">{{navCta}}</a>
+</div></header>
+
+<main id="conteudo">
+
+<!-- ================= PRIMEIRA DOBRA =================
+     Ordem no celular: foto, nota, título, subtítulo, preço, kits, BOTÃO —
+     e só depois brinde, estoque e selos. O botão sobe para logo abaixo da
+     escolha do kit: quem já decidiu não precisa rolar por argumento nenhum. -->
+<section class="r-hero" id="oferta"><div class="r-wrap"><div class="r-hero-grid">
+
+  <div class="r-hero-media">
+    <figure class="r-shot">
+      <span class="r-shot-tag"><b id="disc-badge">-{{descontoPadrao}}%</b><span>hoje</span></span>
+      <img src="{{hero.imagem.src}}"
+           srcset="{{hero.imagem.src480}} 480w, {{hero.imagem.src760}} 760w, {{hero.imagem.src1160}} 1160w"
+           sizes="(min-width:940px) 520px, 92vw"
+           width="760" height="760"
+           alt="{{hero.imagem.alt}}"
+           fetchpriority="high" decoding="async">
+    </figure>
+{{#if hero.thumbs}}    <div class="r-thumbs">
+{{#each hero.thumbs}}      <div class="r-thumb"><img src="{{src}}" width="120" height="160" alt="{{alt}}" loading="lazy" decoding="async"><span>{{linha1}}<br>{{linha2}}</span></div>
+{{/each}}    </div>
+{{/if}}  </div>
+
+  <div class="r-hero-copy">
+    <div class="r-rate">
+      <span class="r-stars" aria-hidden="true">{{#each estrelas5}}<svg class="ic"><use href="#i-star"></use></svg>{{/each}}</span>
+      <b>{{hero.nota}}</b> · {{hero.notaTexto}}
+    </div>
+
+{{#if hero.paraQuem}}    <p class="r-forwho">{{hero.paraQuem}}</p>
+{{/if}}    <h1 class="r-h1">{{hero.titulo}}</h1>
+    <p class="r-sub">{{hero.subtitulo}}</p>
+
+    <!-- Bloco de preço: os IDs abaixo são reescritos pelo app.js a cada troca
+         de kit. Não renomeie nenhum deles. -->
+    <div class="r-price">
+      <span class="r-price-kit" id="hero-kit">{{ofertaPadrao.rotulo}} · {{ofertaPadrao.desc}}</span>
+      <div class="r-price-row">
+        <span class="r-price-now" id="hero-price">{{ofertaPadrao.precoFmt}}</span>
+        <span class="r-price-old" id="hero-old">{{ofertaPadrao.deFmt}}</span>
+      </div>
+      <div class="r-price-meta">
+{{#each hero.chips}}        <span class="r-chip {{#if acento}}r-chip--rs{{/if}}"><svg class="ic"><use href="#i-{{icone}}"></use></svg> {{texto}}</span>
+{{/each}}        <span class="r-chip" id="perday-txt">{{hero.perDiaPrefixo}} {{ofertaPadrao.perDiaFmt}} {{hero.perDiaSufixo}}</span>
+      </div>
+    </div>
+
+    <!-- ESCOLHA DA OFERTA. É o coração da conversão: a pessoa decide o
+         tamanho ANTES de ver o botão, e o botão vem logo abaixo. -->
+    <div class="r-kits">
+      <span class="r-kits-lbl">{{hero.kitsLabel}}</span>
+      <div id="ofKits" role="radiogroup" aria-label="Escolha o tamanho do seu kit">
+{{#each ofertas}}        <button type="button" class="of-kit {{sel}}" role="radio" aria-checked="{{checked}}" data-i="{{@index}}" data-offer="{{id}}">
+{{#if destaque}}          <span class="tag">{{destaque}}</span>
+{{/if}}          <span class="radio" aria-hidden="true"></span>
+          <span class="imgs" aria-hidden="true">{{#each unidadesArr}}<img src="{{$.hero.miniOferta}}" alt="" width="34" height="46" loading="lazy">{{/each}}</span>
+          <span class="kinfo"><span class="kname">{{rotulo}}</span><span class="kper" data-per="{{@index}}">{{sub}}</span></span>
+          <span class="kprice"><b data-price="{{@index}}">{{precoFmt}}</b><s data-old="{{@index}}">{{deFmt}}</s></span>
+        </button>
+{{/each}}      </div>
+    </div>
+
+    <div class="r-cta-wrap">
+      <button class="r-cta r-cta--lg buycta" type="button" data-open-checkout>{{hero.cta}}</button>
+      <p class="r-cta-note">{{hero.ctaNota}}</p>
+    </div>
+
+{{#if hero.brinde}}    <div class="r-gift">
+      <img src="{{hero.brinde.imagem}}" width="112" height="112" alt="{{hero.brinde.alt}}" loading="lazy" decoding="async">
+      <div class="r-gift-b">
+        <span class="r-gift-tag">{{hero.brinde.tag}}</span>
+        <p class="r-gift-nome">{{hero.brinde.nome}}</p>
+        <p>{{hero.brinde.texto}}</p>
+      </div>
+      <span class="r-gift-free">{{hero.brinde.selo}}</span>
+    </div>
+{{/if}}
+{{#if hero.escassez}}    <div class="r-stock">
+      <svg class="ic"><use href="#i-zap"></use></svg>
+      <span>{{hero.escassez}}</span>
+    </div>
+{{/if}}
+    <div class="r-assure">
+{{#each hero.selos}}      <div><svg class="ic"><use href="#i-{{icone}}"></use></svg> {{texto}}</div>
+{{/each}}    </div>
+  </div>
+
+</div></div></section>
+
+<!-- ================= MECANISMO =================
+     Explica por que as tentativas anteriores falharam. Sem esta seção o
+     produto é "mais um"; com ela, é a peça que faltava. Vem logo depois do
+     preço porque é o primeiro argumento de quem NÃO comprou de cara. -->
+<section class="r-sec r-sec--sf"><div class="r-wrap">
+  <div class="r-head">
+    <span class="r-eyebrow">{{mecanismo.eyebrow}}</span>
+    <h2 class="r-h2">{{mecanismo.titulo}}</h2>
+    <p class="r-lead">{{mecanismo.lead}}</p>
+  </div>
+  <div class="r-why reveal">
+{{#each mecanismo.itens}}    <article class="r-why-item">
+      <span class="r-why-n" aria-hidden="true">{{@pad}}</span>
+      <h3>{{titulo}}</h3>
+      <p>{{texto}}</p>
+    </article>
+{{/each}}  </div>
+{{#if mecanismo.fecho}}  <p class="r-why-out">{{mecanismo.fecho}}</p>
+{{/if}}</div></section>
+
+<!-- ================= PROTOCOLO / COMO FUNCIONA =================
+     Apresentação do produto POR FUNÇÃO. Cada passo justifica um item da
+     caixa — é o que impede a pessoa de querer comprar só uma parte. -->
+<section class="r-sec" id="protocolo"><div class="r-wrap">
+  <div class="r-head">
+    <span class="r-eyebrow">{{protocolo.eyebrow}}</span>
+    <h2 class="r-h2">{{protocolo.titulo}}</h2>
+    <p class="r-lead">{{protocolo.lead}}</p>
+  </div>
+  <div class="r-steps reveal">
+{{#each protocolo.passos}}    <article class="r-step">
+      <div class="r-step-top"><span class="r-step-n">{{@num}}</span><span class="r-step-lbl">{{rotulo}}</span></div>
+      <div class="r-step-fig"><img src="{{imagem}}" width="215" height="286" alt="{{alt}}" loading="lazy" decoding="async"></div>
+      <h3>{{titulo}}</h3>
+      <p>{{texto}}</p>
+      <div class="r-step-tags">{{#each tags}}<span>{{.}}</span>{{/each}}</div>
+    </article>
+{{/each}}  </div>
+
+{{#if protocolo.rotinas}}  <div class="r-routine" style="margin-top:20px">
+{{#each protocolo.rotinas}}    <article class="r-rt">
+      <span class="r-rt-tag"><svg class="ic"><use href="#i-{{icone}}"></use></svg> {{tag}}</span>
+      <ol>
+{{#each passos}}        <li>{{.}}</li>
+{{/each}}      </ol>
+    </article>
+{{/each}}  </div>
+{{/if}}
+{{#if protocolo.cuidados}}  <div class="r-care">
+    <h3><svg class="ic"><use href="#i-shield"></use></svg> {{protocolo.cuidados.titulo}}</h3>
+    <ul>
+{{#each protocolo.cuidados.itens}}      <li>{{.}}</li>
+{{/each}}    </ul>
+  </div>
+{{/if}}</div></section>
+
+<!-- ================= LINHA DO TEMPO =================
+     Expectativa realista. Segura o arrependimento na semana 2 (quando a
+     pessoa acha que não funcionou) e justifica o kit maior. -->
+<section class="r-sec r-sec--sf" id="resultados"><div class="r-wrap">
+  <div class="r-head">
+    <span class="r-eyebrow">{{timeline.eyebrow}}</span>
+    <h2 class="r-h2">{{timeline.titulo}}</h2>
+    <p class="r-lead">{{timeline.lead}}</p>
+  </div>
+  <div class="r-tl reveal">
+{{#each timeline.itens}}    <article class="r-tl-item">
+      <div class="r-tl-bar" aria-hidden="true"></div>
+      <span class="r-tl-wk">{{quando}}</span>
+      <h3>{{titulo}}</h3>
+      <p>{{texto}}</p>
+    </article>
+{{/each}}  </div>
+{{#if timeline.nota}}  <p class="r-tl-note">{{timeline.nota}}</p>
+{{/if}}</div></section>
+
+<!-- ================= PROVA EM VÍDEO =================
+     A fita duplica os itens de propósito: o marquee precisa de duas voltas
+     para o laço não dar salto. Os clones levam aria-hidden.
+     `data-poster` (e não `poster`) é obrigatório: `preload="none"` NÃO segura
+     o poster — o atributo nativo baixaria todas as imagens no load. -->
+<section class="r-sec"><div class="r-wrap">
+  <div class="r-head r-head--mid">
+    <span class="r-eyebrow">{{videos.eyebrow}}</span>
+    <h2 class="r-h2">{{videos.titulo}}</h2>
+    <p class="r-lead">{{videos.lead}}</p>
+  </div>
+</div>
+<div class="r-vids"><div class="vtrack" id="vtrack">
+{{#each videos.itens}}  <div class="vidcard"><video src="{{src}}" data-poster="{{poster}}" muted loop playsinline preload="none" aria-label="{{alt}}"></video><span class="cap"><span class="cap-top">{{titulo}}</span><span class="cap-fol">{{legenda}}</span></span></div>
+{{/each}}{{#each videos.itens}}  <div class="vidcard" aria-hidden="true"><video src="{{src}}" data-poster="{{poster}}" muted loop playsinline preload="none"></video><span class="cap"><span class="cap-top">{{titulo}}</span><span class="cap-fol">{{legenda}}</span></span></div>
+{{/each}}</div></div>
+
+{{#if videos.destaque}}<div class="r-wrap" style="margin-top:34px">
+  <div class="r-mainvid">
+    <div class="box" id="mv-box">
+      <video id="mv-video" src="{{videos.destaque.src}}" data-poster="{{videos.destaque.poster}}" muted loop playsinline preload="none"></video>
+      <button class="mv-play" id="mv-play" type="button" aria-label="{{videos.destaque.botaoAria}}">
+        <span class="mv-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></span>
+        <span class="mv-lbl"><svg class="ic"><use href="#i-vol"></use></svg> {{videos.destaque.botaoLabel}}</span>
+      </button>
+    </div>
+    <p class="hint">{{videos.destaque.hint}}</p>
+  </div>
+</div>
+{{/if}}</section>
+
+<!-- ================= AVALIAÇÕES =================
+     Vem DEPOIS da prova em vídeo: quem já viu o rosto de uma cliente lê o
+     texto com outra disposição. Mesmo padrão de fita duplicada. -->
+<section class="r-sec r-sec--sf" id="avaliacoes"><div class="r-wrap">
+  <div class="r-head">
+    <span class="r-eyebrow">{{avaliacoes.eyebrow}}</span>
+    <h2 class="r-h2">{{avaliacoes.titulo}}</h2>
+  </div>
+  <div class="r-score">
+    <span class="r-score-n">{{avaliacoes.nota}}</span>
+    <div class="r-score-b">
+      <span class="r-stars" aria-hidden="true">{{#each estrelas5}}<svg class="ic"><use href="#i-star"></use></svg>{{/each}}</span>
+      <span>{{avaliacoes.resumo}}</span>
+    </div>
+  </div>
+</div>
+<div class="r-revs"><div class="rtrack" id="rtrack">
+{{#each avaliacoes.itens}}  <div class="rev"><div class="top"><span class="nm">{{nome}}</span><span class="vf"><svg class="ic"><use href="#i-check"></use></svg> {{$.avaliacoes.selo}}</span></div><span class="r-stars" aria-label="{{estrelas}} de 5 estrelas">{{#each estrelasArr}}<svg class="ic"><use href="#i-star"></use></svg>{{/each}}</span><p>{{texto}}</p><span class="loc">{{meta}}</span></div>
+{{/each}}{{#each avaliacoes.itens}}  <div class="rev" aria-hidden="true"><div class="top"><span class="nm">{{nome}}</span><span class="vf"><svg class="ic"><use href="#i-check"></use></svg> {{$.avaliacoes.selo}}</span></div><span class="r-stars">{{#each estrelasArr}}<svg class="ic"><use href="#i-star"></use></svg>{{/each}}</span><p>{{texto}}</p><span class="loc">{{meta}}</span></div>
+{{/each}}</div></div>
+
+{{#if avaliacoes.ugc}}<div class="r-ugc" style="margin-top:14px"><div class="utrack" id="utrack">
+{{#each avaliacoes.ugc}}  <figure class="ugc-item"><img src="{{.}}" width="240" height="320" alt="{{#if @first}}{{$.avaliacoes.ugcAlt}}{{/if}}" loading="lazy" decoding="async"></figure>
+{{/each}}{{#each avaliacoes.ugc}}  <figure class="ugc-item" aria-hidden="true"><img src="{{.}}" width="240" height="320" alt="" loading="lazy" decoding="async"></figure>
+{{/each}}</div></div>
+{{/if}}</section>
+
+<!-- ================= COMPARATIVO =================
+     Quebra a objeção "dá pra resolver mais barato de outro jeito". A primeira
+     coluna é sempre a sua e recebe o destaque; a linha de custo puxa o preço
+     da oferta de comparação (o kit maior), não do kit selecionado. -->
+<section class="r-sec"><div class="r-wrap">
+  <div class="r-head">
+    <span class="r-eyebrow">{{comparativo.eyebrow}}</span>
+    <h2 class="r-h2">{{comparativo.titulo}}</h2>
+    <p class="r-lead">{{comparativo.lead}}</p>
+  </div>
+  <div class="r-cmp-wrap">
+    <table class="r-cmp">
+      <caption class="sr">{{comparativo.caption}}</caption>
+      <thead><tr>
+        <th scope="col">&nbsp;</th>
+{{#each comparativo.colunas}}        <th scope="col" {{#if @first}}class="hi"{{/if}}>{{.}}</th>
+{{/each}}      </tr></thead>
+      <tbody>
+{{#each comparativo.linhas}}        <tr><th scope="row">{{criterio}}</th>{{#each valores}}<td {{#if @first}}class="hi"{{/if}}>{{#if cls}}<span class="{{cls}}">{{texto}}</span>{{else}}{{#if id}}<span id="{{id}}">{{texto}}</span>{{else}}{{texto}}{{/if}}{{/if}}{{#if sub}}<span class="r-cmp-sub">{{sub}}</span>{{/if}}</td>{{/each}}</tr>
+{{/each}}      </tbody>
+    </table>
+  </div>
+{{#if comparativo.nota}}  <p class="r-cmp-hint">{{comparativo.nota}}</p>
+{{/if}}</div></section>
+
+<!-- ================= ENTREGA E SEGURANÇA =================
+     Última objeção logística antes da garantia: como pago, quando chega,
+     quanto custa de verdade. -->
+<section class="r-sec r-sec--sf" id="entrega"><div class="r-wrap">
+  <div class="r-head">
+    <span class="r-eyebrow">{{entrega.eyebrow}}</span>
+    <h2 class="r-h2">{{entrega.titulo}}</h2>
+    <p class="r-lead">{{entrega.lead}}</p>
+  </div>
+  <div class="r-trust">
+{{#each entrega.itens}}    <article class="r-trust-item">
+      <span class="r-trust-ico"><svg class="ic"><use href="#i-{{icone}}"></use></svg></span>
+      <h3>{{titulo}}</h3>
+      <p>{{texto}}</p>
+    </article>
+{{/each}}  </div>
+</div></section>
+
+<!-- ================= GARANTIA =================
+     Sozinha na seção, de propósito: é a peça que transfere o risco da cliente
+     para a loja, e dividir espaço com outra coisa enfraquece. -->
+<section class="r-sec" id="garantia"><div class="r-wrap">
+  <div class="r-guar reveal-zoom">
+    <span class="r-guar-seal" aria-hidden="true"><svg class="ic"><use href="#i-shield"></use></svg></span>
+    <h3>{{garantia.titulo}}</h3>
+    <p>{{garantia.texto}}</p>
+  </div>
+</div></section>
+
+<!-- ================= FAQ =================
+     Ordem = objeção mais cara primeiro. A primeira vem aberta para a seção
+     não parecer uma parede de títulos fechados. -->
+<section class="r-sec r-sec--sf" id="faq"><div class="r-wrap">
+  <div class="r-head r-head--mid">
+    <span class="r-eyebrow">{{faq.eyebrow}}</span>
+    <h2 class="r-h2">{{faq.titulo}}</h2>
+  </div>
+  <div class="r-faq">
+{{#each faq.itens}}    <details {{#if @first}}open{{/if}}>
+      <summary>{{p}}</summary>
+      <div class="ans">{{r}}</div>
+    </details>
+{{/each}}  </div>
+</div></section>
+
+<!-- ================= FECHAMENTO =================
+     Repete a oferta para quem leu tudo. Sem novidade: só a decisão. -->
+<section class="r-close"><div class="r-wrap">
+  <h2 class="r-h2">{{fechamento.titulo}}</h2>
+  <p>{{fechamento.texto}}</p>
+  <button class="r-cta r-cta--lg buycta" type="button" data-open-checkout>{{fechamento.cta}}</button>
+  <p class="r-cta-note">{{fechamento.ctaNota}}</p>
+</div></section>
+
+</main>
+
+<!-- ================= RODAPÉ ================= -->
+<footer class="r-ft">
+  <div class="r-wrap">
+    <div class="r-ft-grid">
+      <div>
+        <span class="r-brand">{{marca.nome}}<span>{{marca.ponto}}</span></span>
+        <p class="r-ft-about">{{marca.sobre}}</p>
+        <div class="r-ft-badges">
+{{#each rodape.selos}}          <span><svg class="ic"><use href="#i-{{icone}}"></use></svg> {{texto}}</span>
+{{/each}}        </div>
+      </div>
+{{#each rodape.colunas}}      <div class="r-ft-col">
+        <h3>{{titulo}}</h3>
+{{#each links}}        <a href="{{href}}"><svg class="ic"><use href="#i-{{icone}}"></use></svg> {{label}}</a>
+{{/each}}      </div>
+{{/each}}    </div>
+    <p class="r-ft-disc">{{legal.disclaimer}}</p>
+    <div class="r-ft-bottom">
+      <span>{{marca.copyright}}</span>
+      <span>{{marca.horario}}</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= BARRA FIXA =================
+     Aparece só quando nenhum `.buycta` está visível. Repete a escolha de kit
+     para quem mudou de ideia no meio da página. -->
+<div class="stickycta">
+  <div class="r-wrap">
+    <div class="sk-kits" role="group" aria-label="{{stickyCta.aria}}">
+{{#each ofertas}}      <button type="button" class="sk-kit {{sel}}" data-idx="{{@index}}"><span>{{rotuloCurto}}</span><b>{{precoFmt}}</b></button>
+{{/each}}    </div>
+    <!-- SEM a classe `buycta`: ela marca "botão de compra dentro do conteúdo",
+         e é o que o observer da própria barra observa para decidir se aparece.
+         Com ela aqui, a barra observava o próprio botão e piscava sem parar.
+         O clique e o rastreamento vêm de `data-open-checkout`, não desta classe. -->
+    <button class="r-cta" type="button" data-open-checkout>{{stickyCta.cta}}</button>
+  </div>
+</div>

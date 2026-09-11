@@ -1,0 +1,16 @@
+{
+  "name": "pryon-landing-master",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Template mestre de landing page de produto fisico. A estrutura vem da LP Ritual da Pele; o conteudo vem de config/produto.js. Sem framework: `node build.js` gera index.html e as paginas institucionais, versionados prontos. A dependencia abaixo existe so para as funcoes em api/.",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node build.js && node dev-server.js",
+    "contraste": "node tools/contraste.js",
+    "auditoria": "node build.js && node tools/contraste.js",
+    "atualizar": "node tools/atualizar.js"
+  },
+  "dependencies": {
+    "qrcode": "1.5.4"
+  }
+}

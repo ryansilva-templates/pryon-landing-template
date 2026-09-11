@@ -1,0 +1,15 @@
+# O que NÃO precisa ir para a Vercel.
+#
+# ATENÇÃO: `catalogo.js` e `config/` PRECISAM subir — api/criar-pix.js faz
+# require deles em tempo de execução para montar o valor da cobrança.
+# Excluí-los aqui derruba a criação de Pix em produção.
+
+src/
+tools/
+docs/
+build.js
+dev-server.js
+README.md
+AI-INSTRUCTIONS.md
+CHECKLIST.md
+node_modules

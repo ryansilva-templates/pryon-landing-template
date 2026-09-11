@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Política de privacidade — Ritual da Pele</title>
+<meta name="description" content="Como a Ritual da Pele coleta, usa e protege os dados de quem visita a página e compra o Kit Protocolo Clareador Hidrabene.">
+<meta name="theme-color" content="#FAF7F5">
+<link rel="canonical" href="https://exemplo.vercel.app/privacidade">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="Política de privacidade — Ritual da Pele">
+<meta property="og:description" content="Como a Ritual da Pele coleta, usa e protege os dados de quem visita a página e compra o Kit Protocolo Clareador Hidrabene.">
+<meta property="og:url" content="https://exemplo.vercel.app/privacidade">
+<link rel="stylesheet" href="public/fonts.css">
+<style>
+/* Folha usada só pelas páginas institucionais (termos, privacidade, rastreio).
+   Elas não carregam o bundle de 160KB da LP: são páginas de texto, e o peso
+   ali não converte nada. Só os tokens da marca e tipografia legível. */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ac:#e5709a;--ac-d:#c94f7c;--ac-t:#b03d68;--ac-l:#fdf1f5;
+  --ink:#2a0e1e;--muted:#7a5568;--bg:#fffbfc;--border:#f0dce4;
+  --serif:'Fraunces',Georgia,serif;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--sans);background:var(--bg);color:var(--ink);
+  line-height:1.65;font-size:16px;
+}
+a{color:var(--ac-t)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--ac-d);outline-offset:3px;border-radius:4px}
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:12px;top:12px;z-index:99;background:#fff;padding:12px 18px;border-radius:10px;box-shadow:0 6px 24px rgba(42,14,30,.18)}
+
+.top{background:#fff;border-bottom:1px solid var(--border)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px}
+.brand{font-family:var(--serif);font-weight:600;font-size:1.35rem;letter-spacing:-.02em;color:var(--ink);text-decoration:none}
+.brand span{color:var(--ac)}
+.top a.volta{
+  font-size:.82rem;font-weight:700;text-decoration:none;color:var(--ac-t);
+  display:inline-flex;align-items:center;min-height:44px;padding:0 4px
+}
+
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+main{padding:38px 0 64px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(1.7rem,5vw,2.4rem);line-height:1.15;letter-spacing:-.02em}
+.upd{margin-top:10px;font-size:.82rem;color:var(--muted);font-weight:600}
+h2{
+  font-family:var(--serif);font-weight:600;font-size:clamp(1.15rem,3.4vw,1.4rem);
+  margin:36px 0 10px;line-height:1.25;letter-spacing:-.01em
+}
+h3{font-size:1rem;font-weight:800;margin:22px 0 6px}
+p,li{color:#422134}
+p+p{margin-top:12px}
+ul,ol{margin:12px 0 0 22px}
+li+li{margin-top:7px}
+strong,b{font-weight:800;color:var(--ink)}
+
+.lead{margin-top:16px;font-size:1.03rem;color:#422134}
+.card{
+  margin-top:20px;background:#fff;border:1px solid var(--border);
+  border-radius:16px;padding:18px 20px
+}
+.card.warn{background:var(--ac-l);border-color:#f3c9da}
+.card h3{margin-top:0}
+
+.contato{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px}
+.contato a{
+  display:inline-flex;align-items:center;min-height:46px;padding:0 18px;
+  border-radius:100px;text-decoration:none;font-weight:700;font-size:.9rem;
+  background:linear-gradient(140deg,var(--ac),var(--ac-d));color:#fff
+}
+.contato a.sec{background:#fff;border:1.5px solid var(--border);color:var(--ac-t)}
+
+.ft{border-top:1px solid var(--border);background:#fff;padding:24px 0 34px;margin-top:20px}
+.ft .wrap{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center}
+.ft a{font-size:.86rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;min-height:44px}
+.ft .dis{width:100%;font-size:.74rem;color:var(--muted);line-height:1.55}
+
+/* ===== paleta gerada de config/produto.js ===== */
+:root{
+  --pp:#FAF7F5;
+  --sf:#FFFFFF;
+  --sf2:#F4EFEC;
+  --ln:#E9E1DD;
+  --ln2:#D8CCC6;
+  --t1:#1E1218;
+  --t2:#54444C;
+  --t3:#736570;
+  --rs:#B0446E;
+  --rs-d:#8B2F55;
+  --rs-w:#FBF2F5;
+  --rs-ln:#F0DCE4;
+  --au:#8A6524;
+  --gr:#1F6B45;
+  --dsp:'Fraunces',Georgia,serif;
+  --txt:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/">hidrabene<span>.</span></a>
+    <a class="volta" href="/">&larr; Voltar para a página do kit</a>
+  </div>
+</header>
+<main id="conteudo"><div class="wrap">
+<h1>Política de privacidade</h1>
+<p class="upd">Última atualização: 23 de agosto de 2026</p>
+
+<p class="lead">Esta página explica quais dados nós coletamos quando você visita este site
+ou compra o Kit Protocolo Clareador, para que usamos cada um deles, com quem eles são
+compartilhados e como você pede para apagá-los.</p>
+
+<div class="card warn">
+  <h3>Identificação do responsável</h3>
+  <p>O responsável pelo tratamento dos seus dados é a empresa que opera a marca
+  <b>Ritual da Pele</b> e vende o Kit Protocolo Clareador Hidrabene. Para qualquer
+  assunto relacionado aos seus dados, o canal é
+  <a href="mailto:contato@exemplo.com.br">contato@exemplo.com.br</a>.</p>
+</div>
+
+<h2>1. Que dados nós coletamos</h2>
+
+<h3>a) Quando você só navega</h3>
+<ul>
+  <li><b>Dados de navegação:</b> endereço IP, tipo de navegador e de dispositivo, páginas
+  vistas e tempo de permanência.</li>
+  <li><b>Parâmetros de campanha:</b> se você chegou por um anúncio, guardamos no seu
+  navegador os parâmetros do link (<code>utm_source</code>, <code>utm_campaign</code>,
+  <code>fbclid</code> e semelhantes) por <b>7 dias</b>, para saber qual anúncio trouxe
+  a visita. Depois desse prazo eles são descartados automaticamente.</li>
+  <li><b>Cookies de medição de anúncios:</b> o Meta Pixel grava os cookies
+  <code>_fbp</code> e <code>_fbc</code> no seu navegador.</li>
+</ul>
+
+<h3>b) Quando você compra</h3>
+<p>O pagamento acontece no ambiente da <b>Korvex</b>, nosso processador de pagamentos, e é
+lá que você digita seus dados. Recebemos de volta o que é necessário para faturar e
+entregar o pedido:</p>
+<ul>
+  <li>nome completo, e-mail e telefone;</li>
+  <li>CPF, exigido pela legislação fiscal para emissão da nota;</li>
+  <li>endereço completo de entrega;</li>
+  <li>dados do pedido: itens, valor, forma de pagamento e situação.</li>
+</ul>
+<p><b>Não recebemos e não armazenamos dados de cartão.</b> Quando o pagamento é feito
+com cartão, os dados vão direto para a Korvex e para a operadora, sem passar por nós.</p>
+
+<h2>2. Para que usamos</h2>
+<ul>
+  <li><b>Executar a compra:</b> processar o pagamento, emitir a nota, separar, postar e
+  acompanhar a entrega, e prestar atendimento sobre o pedido. (Base legal: execução de
+  contrato.)</li>
+  <li><b>Cumprir obrigações legais:</b> guardar registros fiscais e de venda pelos prazos
+  que a lei exige. (Base legal: obrigação legal.)</li>
+  <li><b>Medir e melhorar nossos anúncios:</b> saber quantas pessoas que viram um anúncio
+  chegaram ao site e concluíram a compra, sem identificar você individualmente no
+  relatório. (Base legal: legítimo interesse — e você pode se opor, ver o item 6.)</li>
+</ul>
+<p>Nós <b>não vendemos</b> seus dados e não os usamos para nenhuma finalidade que não
+esteja escrita nesta página.</p>
+
+<h2>3. Com quem compartilhamos</h2>
+<ul>
+  <li><b>Korvex</b> — processamento do pagamento por Pix e emissão da cobrança.</li>
+  <li><b>Meta (Facebook e Instagram)</b> — enviamos eventos de navegação e de compra
+  (visita, início de checkout e venda aprovada) para medir os anúncios. Os dados pessoais
+  que acompanham esses eventos, como e-mail e telefone, saem daqui
+  <b>criptografados com hash SHA-256</b>, de modo que a Meta consegue parear o evento mas
+  não consegue ler o dado original.</li>
+  <li><b>Transportadora</b> — nome, endereço e telefone, para conseguir entregar.</li>
+  <li><b>Autoridades públicas</b> — quando houver determinação legal ou judicial.</li>
+</ul>
+
+<h2>4. Cookies e como recusar</h2>
+<p>Usamos duas categorias de cookies e armazenamento local:</p>
+<ul>
+  <li><b>Necessários:</b> guardam a sua escolha de kit e o relógio da oferta. Sem eles a
+  página não funciona direito.</li>
+  <li><b>De medição de anúncios:</b> <code>_fbp</code> e <code>_fbc</code>, do Meta Pixel.</li>
+</ul>
+<p>Você pode bloquear ou apagar cookies nas configurações do seu navegador, e pode
+desativar a publicidade personalizada da Meta diretamente nas
+<a href="https://www.facebook.com/settings?tab=ads" rel="noopener noreferrer" target="_blank">preferências de anúncios da sua conta</a>.
+Bloquear os cookies de medição não impede você de comprar.</p>
+
+<h2>5. Por quanto tempo guardamos</h2>
+<ul>
+  <li><b>Dados do pedido e da nota fiscal:</b> pelo prazo exigido pela legislação fiscal.</li>
+  <li><b>Parâmetros de campanha no seu navegador:</b> 7 dias.</li>
+  <li><b>Mensagens de atendimento:</b> enquanto forem necessárias para resolver o assunto.</li>
+</ul>
+
+<h2>6. Seus direitos</h2>
+<p>Pela Lei Geral de Proteção de Dados (Lei 13.709/2018) você pode, a qualquer momento,
+pedir: confirmação de que tratamos seus dados; acesso a eles; correção do que estiver
+errado; anonimização, bloqueio ou eliminação de dados desnecessários; portabilidade;
+informação sobre com quem compartilhamos; e revogação do consentimento, quando for esse
+o caso. Também pode <b>se opor</b> ao uso baseado em legítimo interesse.</p>
+<p>Basta escrever para <a href="mailto:contato@exemplo.com.br">contato@exemplo.com.br</a>.
+Respondemos em até 15 dias. Alguns dados fiscais não podem ser apagados antes do prazo
+legal — nesse caso explicamos qual é a obrigação que nos impede.</p>
+
+<h2>7. Segurança</h2>
+<p>O site é servido por HTTPS e o pagamento acontece no ambiente da Korvex, que não
+compartilha conosco os dados sensíveis da transação. Nenhum sistema é infalível: se
+ocorrer um incidente que possa gerar risco relevante a você, comunicaremos você e a
+Autoridade Nacional de Proteção de Dados, como manda a lei.</p>
+
+<h2>8. Menores de idade</h2>
+<p>Este site não é direcionado a menores de 18 anos e não coletamos dados de crianças e
+adolescentes de forma consciente.</p>
+
+<h2>9. Mudanças nesta política</h2>
+<p>Se mudarmos algo relevante, atualizamos a data no topo desta página. Vale sempre a
+versão publicada aqui.</p>
+
+<h2>10. Contato</h2>
+<div class="contato">
+  <a href="mailto:contato@exemplo.com.br">Falar por e-mail</a>
+  <a class="sec" href="tel:+5500000000000">(00) 00000-0000</a>
+</div>
+</div></main>
+<footer class="ft">
+  <div class="wrap">
+    <a href="/">Página do kit</a>
+    <a href="/termos">Termos de uso</a>
+    <a href="/privacidade">Política de privacidade</a>
+    <a href="/rastrear-pedido">Rastrear meu pedido</a>
+    <a href="mailto:contato@exemplo.com.br">contato@exemplo.com.br</a>
+    <p class="dis">Resultados variam de pessoa para pessoa e dependem do uso contínuo do protocolo. Este produto é um cosmético e não substitui avaliação, diagnóstico ou tratamento dermatológico. Este site não é afiliado ao Facebook, Instagram ou Meta.</p>
+  </div>
+</footer>
+</body>
+</html>

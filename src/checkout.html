@@ -1,0 +1,263 @@
+<!-- ================= CHECKOUT NA PRÓPRIA PÁGINA =================
+     A cobrança Pix é criada por /api/criar-pix, que fala com a API da Korvex
+     (POST /gateway/pix/receive) e devolve o código copia-e-cola. A cliente
+     não sai mais de o site para pagar.
+
+     O iframe da Korvex continua impossível (x-frame-options: SAMEORIGIN e CSP
+     frame-ancestors 'self'), mas com a API ele não é necessário.
+
+     Se /api/criar-pix falhar por qualquer motivo — chave ausente, API fora,
+     rede — o botão cai sozinho no redirect antigo para o checkout hospedado.
+     Checkout morto perde 100% da venda; redirect perde uma parte. -->
+<div class="ck" id="ck" role="dialog" aria-modal="true" aria-labelledby="ck-title">
+  <div class="ck-bd" data-close-checkout></div>
+  <div class="ck-pan" role="document">
+
+    <div class="ck-hd">
+      <h2 id="ck-title">Finalizar pedido</h2>
+      <button type="button" class="ck-x" data-close-checkout aria-label="Fechar">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      </button>
+    </div>
+
+    <!-- Barra de progresso: mostra que são 3 passos curtos, não um formulário sem fim -->
+    <ol class="ck-steps" id="ck-steps" aria-label="Etapas do pedido">
+      <li class="on" data-step="1"><span class="n">1</span><span class="t">Seus dados</span></li>
+      <li data-step="2"><span class="n">2</span><span class="t">Entrega</span></li>
+      <li data-step="3"><span class="n">3</span><span class="t">Pagamento</span></li>
+    </ol>
+
+    <div class="ck-body">
+
+      <!-- ---------------- PASSO 1: dados pessoais ---------------- -->
+      <section class="ck-pane on" id="ck-p1" aria-labelledby="ck-p1-h">
+        <div class="ck-sum">
+          <div class="hd"><span>Seu pedido</span><button type="button" id="ck-trocar">Trocar kit</button></div>
+          <p class="nm" data-sum-name>2 Kits Completos</p>
+          <div class="ln"><span data-sum-desc>4 meses de tratamento</span><span class="tnum" data-sum-sub>R$ 54,90</span></div>
+          <div class="ln"><span data-sum-frete-nome>Frete grátis (5 a 9 dias)</span><span class="tnum" data-sum-frete>Grátis</span></div>
+          <div class="ln tt"><span>Total</span><b class="tnum" data-sum-total>R$ 54,90</b></div>
+          <p class="gft"><svg class="ic" style="width:14px;height:14px"><use href="#i-gift"></use></svg> BellaFios Gummies incluso — R$ 39,90 grátis</p>
+        </div>
+
+        <div id="ck-form1">
+        <h3 class="ck-leg" id="ck-p1-h">Seus dados</h3>
+        <div class="ck-campo">
+          <label for="f-nome">Nome completo</label>
+          <input id="f-nome" name="nome" type="text" autocomplete="name" inputmode="text" placeholder="Como está no seu documento">
+          <span class="ck-erro" id="e-nome"></span>
+        </div>
+        <div class="ck-campo">
+          <label for="f-email">E-mail</label>
+          <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="para receber o código de rastreio">
+          <span class="ck-erro" id="e-email"></span>
+        </div>
+        <div class="ck-dois">
+          <div class="ck-campo">
+            <label for="f-telefone">Telefone com DDD</label>
+            <input id="f-telefone" name="telefone" type="tel" autocomplete="tel" inputmode="numeric" placeholder="(00) 00000-0000" maxlength="16">
+            <span class="ck-erro" id="e-telefone"></span>
+          </div>
+          <div class="ck-campo">
+            <label for="f-cpf">CPF</label>
+            <input id="f-cpf" name="cpf" type="text" autocomplete="off" inputmode="numeric" placeholder="000.000.000-00" maxlength="14">
+            <span class="ck-erro" id="e-cpf"></span>
+          </div>
+        </div>
+        <p class="ck-nota">O CPF é exigido para emitir a nota fiscal do pedido.</p>
+
+        <button type="button" class="ck-btn" id="ck-ir2">Continuar para a entrega →</button>
+        </div>
+
+        <!-- Caminho de reserva: enquanto as chaves da API da Korvex não estiverem
+             configuradas, o pagamento acontece no checkout hospedado. Aí não faz
+             sentido pedir os dados aqui — eles seriam pedidos de novo lá. -->
+        <div id="ck-legado" hidden>
+          <button type="button" class="ck-btn" id="ck-legado-btn">
+            <svg class="ic" style="width:17px;height:17px"><use href="#i-lock"></use></svg>
+            <span id="ck-legado-lbl">Ir para o pagamento →</span>
+          </button>
+          <p class="ck-nota" style="text-align:center;margin-top:10px">
+            Você vai para o ambiente de pagamento da <b>Korvex</b>, onde preenche os
+            dados e recebe o Pix. Leva menos de um minuto.
+          </p>
+        </div>
+      </section>
+
+      <!-- ---------------- PASSO 2: entrega ---------------- -->
+      <section class="ck-pane" id="ck-p2" aria-labelledby="ck-p2-h" hidden>
+        <h3 class="ck-leg" id="ck-p2-h">Onde entregar</h3>
+
+        <div class="ck-dois">
+          <div class="ck-campo">
+            <label for="f-cep">CEP</label>
+            <input id="f-cep" name="cep" type="text" autocomplete="postal-code" inputmode="numeric" placeholder="00000-000" maxlength="9">
+            <span class="ck-erro" id="e-cep"></span>
+            <span class="ck-dica" id="cep-dica" role="status"></span>
+          </div>
+          <div class="ck-campo">
+            <label for="f-numero">Número</label>
+            <input id="f-numero" name="numero" type="text" inputmode="numeric" autocomplete="address-line2" placeholder="123" maxlength="20">
+            <span class="ck-erro" id="e-numero"></span>
+          </div>
+        </div>
+
+        <div class="ck-campo">
+          <label for="f-rua">Rua</label>
+          <input id="f-rua" name="rua" type="text" autocomplete="address-line1" placeholder="preenchido pelo CEP">
+          <span class="ck-erro" id="e-rua"></span>
+        </div>
+
+        <div class="ck-dois">
+          <div class="ck-campo">
+            <label for="f-bairro">Bairro</label>
+            <input id="f-bairro" name="bairro" type="text" autocomplete="address-level3">
+            <span class="ck-erro" id="e-bairro"></span>
+          </div>
+          <div class="ck-campo">
+            <label for="f-complemento">Complemento <span class="opt">(opcional)</span></label>
+            <input id="f-complemento" name="complemento" type="text" placeholder="apto, bloco…" maxlength="60">
+          </div>
+        </div>
+
+        <div class="ck-dois">
+          <div class="ck-campo">
+            <label for="f-cidade">Cidade</label>
+            <input id="f-cidade" name="cidade" type="text" autocomplete="address-level2">
+            <span class="ck-erro" id="e-cidade"></span>
+          </div>
+          <div class="ck-campo">
+            <label for="f-uf">UF</label>
+            <input id="f-uf" name="uf" type="text" autocomplete="address-level1" maxlength="2" placeholder="SC">
+            <span class="ck-erro" id="e-uf"></span>
+          </div>
+        </div>
+
+        <h3 class="ck-leg">Como você quer receber</h3>
+        <div class="ship-opts" role="radiogroup" aria-label="Opções de frete">
+          <button type="button" class="ship-opt on" role="radio" aria-checked="true" data-ship="gratis">
+            <span class="rd" aria-hidden="true"></span>
+            <span class="tx"><b>Frete grátis</b><span>5 a 9 dias úteis</span></span>
+            <span class="pr">Grátis</span>
+          </button>
+          <button type="button" class="ship-opt" role="radio" aria-checked="false" data-ship="expresso">
+            <span class="rd" aria-hidden="true"></span>
+            <span class="tx"><b>Frete expresso</b><span>1 a 3 dias úteis</span></span>
+            <span class="pr tnum">+ R$ 9,90</span>
+          </button>
+        </div>
+
+        <div class="ck-total-linha">
+          <span>Total a pagar</span><b class="tnum" data-sum-total>R$ 54,90</b>
+        </div>
+
+        <p class="ck-alert" id="ck-alert" role="alert"></p>
+
+        <button type="button" class="ck-btn" id="ck-gerar">
+          <svg class="ic" style="width:17px;height:17px"><use href="#i-lock"></use></svg>
+          <span id="ck-gerar-lbl">Gerar meu código Pix</span>
+        </button>
+        <button type="button" class="ck-voltar" data-voltar="1">← Voltar</button>
+      </section>
+
+      <!-- ---------------- PASSO 3: Pix ---------------- -->
+      <section class="ck-pane" id="ck-p3" aria-labelledby="ck-p3-h" hidden>
+        <h3 class="ck-leg" id="ck-p3-h">Pague com Pix para liberar o pedido</h3>
+
+        <div class="pix-topo">
+          <span class="pix-val">Total <b class="tnum" data-sum-total>R$ 54,90</b></span>
+          <span class="pix-sel"><svg class="ic" style="width:13px;height:13px"><use href="#i-lock"></use></svg> Pix pelo seu banco</span>
+        </div>
+
+        <!-- Copia-e-cola primeiro, de propósito: quem paga está no celular e não
+             consegue escanear a própria tela. O QR é para quem abriu no desktop. -->
+        <p class="pix-passo"><b>1.</b> Copie o código abaixo</p>
+        <div class="pix-code">
+          <code id="pix-code" aria-label="Código Pix copia e cola"></code>
+        </div>
+        <button type="button" class="ck-btn" id="pix-copiar">Copiar código Pix</button>
+
+        <!-- PRAZO REAL DA COBRANÇA — 24h, medido, não estimado.
+             O documento da cobrança no PSP nasce com "expiracao": 86400. Passado
+             esse prazo o PSP o remove e o copia-e-cola para de funcionar, mesmo
+             com a Korvex ainda reportando a transação como PENDING.
+             Auditoria de 02/09/2026: 103 de 150 pendências já eram códigos
+             mortos, e nada avisava a cliente que havia relógio correndo.
+
+             POR QUE VAI DENTRO DO PASSO 2, e não num parágrafo próprio: como
+             bloco separado ele custava ~66px e empurrava o aviso do recebedor
+             para 12px da borda (era 62px). Esse aviso é o ponto de maior
+             desconfiança da compra e não pode sair da primeira dobra por causa
+             deste. Aqui o prazo custa uma linha e não mexe na margem de ninguém.
+             Se a Korvex mudar o prazo, este texto muda junto. -->
+        <p class="pix-passo"><b>2.</b> Abra o app do seu banco, escolha <b>Pix Copia e Cola</b> e
+          cole — <b>o código vale por 24 horas</b></p>
+
+        <!-- O nome do recebedor no BR Code é o da instituição que processa o
+             pagamento, NÃO o da loja. Sem este aviso, a compradora vê um nome
+             desconhecido bem na hora de confirmar e desiste com o código já
+             colado — é o ponto de maior desconfiança da compra inteira.
+
+             DESCUBRA O SEU: faça um Pix de R$ 1,00 para a sua própria cobrança
+             e leia o nome que aparece no app do banco. Não é o nome do gateway;
+             é o do recebedor. Preencha em `checkout.nomeNoExtrato` no config.
+             Ver docs/CONVERSAO.md §9.3. -->
+{{#if checkout.nomeNoExtrato}}        <p class="pix-aviso">
+          <b>No app do banco vai aparecer o nome {{checkout.nomeNoExtrato}}.</b>
+          É a empresa que processa o pagamento do nosso checkout. O pedido é da
+          {{marca.nomeLegal}} e chega normalmente.
+        </p>
+{{/if}}
+
+        <details class="pix-qr-wrap">
+          <summary>Prefiro escanear o QR Code</summary>
+          <div class="pix-qr"><img id="pix-qr" alt="QR Code do Pix para pagamento" width="180" height="180" hidden></div>
+          <a id="pix-qr-link" class="pix-qr-link" href="#" target="_blank" rel="noopener noreferrer" hidden>Abrir o QR Code numa aba nova →</a>
+        </details>
+
+        <div class="pix-esperando" id="pix-esperando">
+          <span class="spin" aria-hidden="true"></span>
+          <span>Aguardando a confirmação do banco…</span>
+        </div>
+        <!-- PROMESSA QUE A PÁGINA CONSEGUE CUMPRIR.
+             Este texto dizia "você também recebe o e-mail com o número do pedido".
+             A LP não envia e-mail nenhum — não há Resend, SMTP nem variável de
+             e-mail no projeto. Era uma promessa falsa no momento de maior
+             fricção da compra: a cliente lia que podia fechar, fechava, nunca
+             recebia nada, perdia o código e não voltava. Auditoria de
+             26/08/2026: 62% dos Pix gerados por cliente real não foram pagos.
+             Agora o texto descreve o que de fato acontece — o código fica
+             guardado no aparelho dela (ver GUARDA_MS em app.js) e volta sozinho
+             quando ela reabre a página. -->
+        <p class="ck-nota">A tela vira sozinha quando o pagamento cair.
+        <strong>Mandamos o código também para o seu e-mail</strong> — dá para pagar depois,
+        de qualquer aparelho, sem preencher nada de novo.</p>
+      </section>
+
+      <!-- ---------------- PASSO 4: confirmado ---------------- -->
+      <section class="ck-pane ck-ok" id="ck-p4" aria-labelledby="ck-p4-h" hidden>
+        <span class="ok-ic" aria-hidden="true"><svg class="ic"><use href="#i-check"></use></svg></span>
+        <h3 id="ck-p4-h">Pagamento confirmado!</h3>
+        <p>Seu pedido <b id="ck-pedido"></b> está confirmado. Ele é postado em até
+        <b>24 horas úteis</b> e o código de rastreio chega no seu e-mail.</p>
+        <p class="ck-nota">Guarde o número do pedido. Qualquer dúvida:
+        <a href="mailto:{{marca.email}}">{{marca.email}}</a></p>
+        <button type="button" class="ck-btn" data-close-checkout>Fechar</button>
+      </section>
+
+      <ul class="ck-inc" id="ck-inc">
+        <li><b class="q">2×</b> Sabonete Líquido Facial · 120 ml</li>
+        <li><b class="q">2×</b> Sérum Multicorretivo Clareador · 30 ml</li>
+        <li><b class="q">2×</b> Protetor Solar Facial FPS 70 · 50 g</li>
+        <li class="bonus"><b class="q">1×</b> BellaFios Gummies 60un — brinde</li>
+      </ul>
+
+      <div class="ck-safe">
+        <span><svg class="ic"><use href="#i-lock"></use></svg> Pagamento pelo seu banco</span>
+        <span><svg class="ic"><use href="#i-shield"></use></svg> 30 dias de garantia</span>
+        <span><svg class="ic"><use href="#i-truck"></use></svg> Frete grátis</span>
+      </div>
+
+    </div>
+  </div>
+</div>

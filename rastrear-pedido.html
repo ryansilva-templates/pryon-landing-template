@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Rastrear meu pedido — Ritual da Pele</title>
+<meta name="description" content="Acompanhe seu Kit Protocolo Clareador pelo número do pedido e o e-mail da compra.">
+<meta name="theme-color" content="#FAF7F5">
+<link rel="canonical" href="https://exemplo.vercel.app/rastrear-pedido">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="Rastrear meu pedido — Ritual da Pele">
+<meta property="og:description" content="Acompanhe seu Kit Protocolo Clareador pelo número do pedido e o e-mail da compra.">
+<meta property="og:url" content="https://exemplo.vercel.app/rastrear-pedido">
+<link rel="stylesheet" href="public/fonts.css">
+<style>
+/* Folha usada só pelas páginas institucionais (termos, privacidade, rastreio).
+   Elas não carregam o bundle de 160KB da LP: são páginas de texto, e o peso
+   ali não converte nada. Só os tokens da marca e tipografia legível. */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ac:#e5709a;--ac-d:#c94f7c;--ac-t:#b03d68;--ac-l:#fdf1f5;
+  --ink:#2a0e1e;--muted:#7a5568;--bg:#fffbfc;--border:#f0dce4;
+  --serif:'Fraunces',Georgia,serif;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--sans);background:var(--bg);color:var(--ink);
+  line-height:1.65;font-size:16px;
+}
+a{color:var(--ac-t)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--ac-d);outline-offset:3px;border-radius:4px}
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:12px;top:12px;z-index:99;background:#fff;padding:12px 18px;border-radius:10px;box-shadow:0 6px 24px rgba(42,14,30,.18)}
+
+.top{background:#fff;border-bottom:1px solid var(--border)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px}
+.brand{font-family:var(--serif);font-weight:600;font-size:1.35rem;letter-spacing:-.02em;color:var(--ink);text-decoration:none}
+.brand span{color:var(--ac)}
+.top a.volta{
+  font-size:.82rem;font-weight:700;text-decoration:none;color:var(--ac-t);
+  display:inline-flex;align-items:center;min-height:44px;padding:0 4px
+}
+
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+main{padding:38px 0 64px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(1.7rem,5vw,2.4rem);line-height:1.15;letter-spacing:-.02em}
+.upd{margin-top:10px;font-size:.82rem;color:var(--muted);font-weight:600}
+h2{
+  font-family:var(--serif);font-weight:600;font-size:clamp(1.15rem,3.4vw,1.4rem);
+  margin:36px 0 10px;line-height:1.25;letter-spacing:-.01em
+}
+h3{font-size:1rem;font-weight:800;margin:22px 0 6px}
+p,li{color:#422134}
+p+p{margin-top:12px}
+ul,ol{margin:12px 0 0 22px}
+li+li{margin-top:7px}
+strong,b{font-weight:800;color:var(--ink)}
+
+.lead{margin-top:16px;font-size:1.03rem;color:#422134}
+.card{
+  margin-top:20px;background:#fff;border:1px solid var(--border);
+  border-radius:16px;padding:18px 20px
+}
+.card.warn{background:var(--ac-l);border-color:#f3c9da}
+.card h3{margin-top:0}
+
+.contato{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px}
+.contato a{
+  display:inline-flex;align-items:center;min-height:46px;padding:0 18px;
+  border-radius:100px;text-decoration:none;font-weight:700;font-size:.9rem;
+  background:linear-gradient(140deg,var(--ac),var(--ac-d));color:#fff
+}
+.contato a.sec{background:#fff;border:1.5px solid var(--border);color:var(--ac-t)}
+
+.ft{border-top:1px solid var(--border);background:#fff;padding:24px 0 34px;margin-top:20px}
+.ft .wrap{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center}
+.ft a{font-size:.86rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;min-height:44px}
+.ft .dis{width:100%;font-size:.74rem;color:var(--muted);line-height:1.55}
+
+/* ===== paleta gerada de config/produto.js ===== */
+:root{
+  --pp:#FAF7F5;
+  --sf:#FFFFFF;
+  --sf2:#F4EFEC;
+  --ln:#E9E1DD;
+  --ln2:#D8CCC6;
+  --t1:#1E1218;
+  --t2:#54444C;
+  --t3:#736570;
+  --rs:#B0446E;
+  --rs-d:#8B2F55;
+  --rs-w:#FBF2F5;
+  --rs-ln:#F0DCE4;
+  --au:#8A6524;
+  --gr:#1F6B45;
+  --dsp:'Fraunces',Georgia,serif;
+  --txt:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/">hidrabene<span>.</span></a>
+    <a class="volta" href="/">&larr; Voltar para a página do kit</a>
+  </div>
+</header>
+<main id="conteudo"><div class="wrap">
+<h1>Rastrear meu pedido</h1>
+
+<!-- ATENÇÃO AO EDITAR ESTA PÁGINA.
+
+     Até 03/09/2026 ela mandava a cliente rastrear NOS CORREIOS, com um código
+     no formato "AA123456789BR". Nada disso existe nesta operação: a entrega é
+     por transportadora própria (RITUAL EXPRESS) e o código de rastreio É O
+     PRÓPRIO NÚMERO DO PEDIDO. Era copy de template que nunca foi adaptada, e
+     mandava a cliente para um site onde o código dela nunca ia funcionar.
+
+     O rastreio de verdade é o mesmo link que sai nos e-mails:
+     https://exemplo.com/rastrear-pedido
+     Ele pede número do pedido + e-mail da compra (as duas coisas, de propósito:
+     só o código não pode abrir o endereço de ninguém).
+
+     Se um dia a operação passar a postar nos Correios, esta página volta a
+     precisar do bloco de lá — mas aí o e-mail de postagem também muda. -->
+
+<p class="lead">Você acompanha o seu pedido <b>aqui mesmo, com a gente</b> — não é preciso
+consultar site de transportadora. Basta o <b>número do pedido</b> e o <b>e-mail que você
+usou na compra</b>.</p>
+
+<div class="contato">
+  <a href="https://exemplo.com/rastrear-pedido" rel="noopener noreferrer" target="_blank">Rastrear meu pedido</a>
+</div>
+
+<div class="card">
+  <h3>Onde achar o número do pedido</h3>
+  <p>Ele está em <b>todos os e-mails</b> que a gente te manda, começando pela confirmação
+  do pagamento. É um código no formato <b>HB-XXXXXXXX-XXXXXX</b> — esse mesmo número é o
+  seu código de rastreio, não existe um segundo código para procurar.</p>
+  <p>Se não achar o e-mail na caixa de entrada, olhe no <b>spam</b> e na aba
+  <b>Promoções</b> — é onde ele costuma parar.</p>
+</div>
+
+<div class="card">
+  <h3>O que você vê no rastreio</h3>
+  <p>A situação atual do pedido e a próxima etapa prevista: pagamento aprovado, em
+  preparação, despachado, em trânsito e saiu para entrega. A cada mudança você também
+  recebe um e-mail, então não precisa ficar conferindo.</p>
+</div>
+
+<h2>Ainda não recebi nenhum e-mail</h2>
+<p>Nesse caso pode ser uma destas três coisas:</p>
+<ul>
+  <li><b>O pagamento ainda não foi confirmado.</b> O pedido só entra na fila de envio
+  depois que o Pix cai. Vale conferir se o pagamento saiu mesmo do seu banco.</li>
+  <li><b>O código Pix venceu antes do pagamento.</b> A cobrança vale <b>24 horas</b>;
+  passado esse prazo ela deixa de funcionar e nada é cobrado — nesse caso é só refazer o
+  pedido.</li>
+  <li><b>O e-mail foi digitado errado na compra.</b> Acontece com frequência. Fale com a
+  gente que corrigimos e reenviamos.</li>
+</ul>
+
+<h2>Prazos de entrega</h2>
+<ul>
+  <li><b>Frete grátis:</b> 5 a 9 dias úteis após o despacho.</li>
+  <li><b>Frete expresso (R$ 9,90):</b> 1 a 3 dias úteis após o despacho.</li>
+</ul>
+<p>Os prazos valem a partir do despacho, não da compra. O pedido é preparado e despachado
+em até 24 horas úteis depois da confirmação do Pix.</p>
+
+<h2>Falar com a gente</h2>
+<p>Tenha em mãos o <b>número do pedido</b> ou o <b>e-mail usado na compra</b> — com isso
+localizamos tudo em um minuto.</p>
+<div class="contato">
+  <a href="mailto:contato@exemplo.com.br?subject=Rastreio%20do%20meu%20pedido">Falar por e-mail</a>
+  <a class="sec" href="tel:+5500000000000">(00) 00000-0000</a>
+</div>
+</div></main>
+<footer class="ft">
+  <div class="wrap">
+    <a href="/">Página do kit</a>
+    <a href="/termos">Termos de uso</a>
+    <a href="/privacidade">Política de privacidade</a>
+    <a href="/rastrear-pedido">Rastrear meu pedido</a>
+    <a href="mailto:contato@exemplo.com.br">contato@exemplo.com.br</a>
+    <p class="dis">Resultados variam de pessoa para pessoa e dependem do uso contínuo do protocolo. Este produto é um cosmético e não substitui avaliação, diagnóstico ou tratamento dermatológico. Este site não é afiliado ao Facebook, Instagram ou Meta.</p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!--titulo: Rastrear meu pedido-->
+<!--desc: Acompanhe seu Kit Protocolo Clareador pelo número do pedido e o e-mail da compra.-->
+<h1>Rastrear meu pedido</h1>
+
+<!-- ATENÇÃO AO EDITAR ESTA PÁGINA.
+
+     Até 03/09/2026 ela mandava a cliente rastrear NOS CORREIOS, com um código
+     no formato "AA123456789BR". Nada disso existe nesta operação: a entrega é
+     por transportadora própria (RITUAL EXPRESS) e o código de rastreio É O
+     PRÓPRIO NÚMERO DO PEDIDO. Era copy de template que nunca foi adaptada, e
+     mandava a cliente para um site onde o código dela nunca ia funcionar.
+
+     O rastreio de verdade é o mesmo link que sai nos e-mails:
+     {{paginas.rastreioUrl}}
+     Ele pede número do pedido + e-mail da compra (as duas coisas, de propósito:
+     só o código não pode abrir o endereço de ninguém).
+
+     Se um dia a operação passar a postar nos Correios, esta página volta a
+     precisar do bloco de lá — mas aí o e-mail de postagem também muda. -->
+
+<p class="lead">Você acompanha o seu pedido <b>aqui mesmo, com a gente</b> — não é preciso
+consultar site de transportadora. Basta o <b>número do pedido</b> e o <b>e-mail que você
+usou na compra</b>.</p>
+
+<div class="contato">
+  <a href="{{paginas.rastreioUrl}}" rel="noopener noreferrer" target="_blank">Rastrear meu pedido</a>
+</div>
+
+<div class="card">
+  <h3>Onde achar o número do pedido</h3>
+  <p>Ele está em <b>todos os e-mails</b> que a gente te manda, começando pela confirmação
+  do pagamento. É um código no formato <b>HB-XXXXXXXX-XXXXXX</b> — esse mesmo número é o
+  seu código de rastreio, não existe um segundo código para procurar.</p>
+  <p>Se não achar o e-mail na caixa de entrada, olhe no <b>spam</b> e na aba
+  <b>Promoções</b> — é onde ele costuma parar.</p>
+</div>
+
+<div class="card">
+  <h3>O que você vê no rastreio</h3>
+  <p>A situação atual do pedido e a próxima etapa prevista: pagamento aprovado, em
+  preparação, despachado, em trânsito e saiu para entrega. A cada mudança você também
+  recebe um e-mail, então não precisa ficar conferindo.</p>
+</div>
+
+<h2>Ainda não recebi nenhum e-mail</h2>
+<p>Nesse caso pode ser uma destas três coisas:</p>
+<ul>
+  <li><b>O pagamento ainda não foi confirmado.</b> O pedido só entra na fila de envio
+  depois que o Pix cai. Vale conferir se o pagamento saiu mesmo do seu banco.</li>
+  <li><b>O código Pix venceu antes do pagamento.</b> A cobrança vale <b>24 horas</b>;
+  passado esse prazo ela deixa de funcionar e nada é cobrado — nesse caso é só refazer o
+  pedido.</li>
+  <li><b>O e-mail foi digitado errado na compra.</b> Acontece com frequência. Fale com a
+  gente que corrigimos e reenviamos.</li>
+</ul>
+
+<h2>Prazos de entrega</h2>
+<ul>
+  <li><b>Frete grátis:</b> 5 a 9 dias úteis após o despacho.</li>
+  <li><b>Frete expresso (R$ 9,90):</b> 1 a 3 dias úteis após o despacho.</li>
+</ul>
+<p>Os prazos valem a partir do despacho, não da compra. O pedido é preparado e despachado
+em até 24 horas úteis depois da confirmação do Pix.</p>
+
+<h2>Falar com a gente</h2>
+<p>Tenha em mãos o <b>número do pedido</b> ou o <b>e-mail usado na compra</b> — com isso
+localizamos tudo em um minuto.</p>
+<div class="contato">
+  <a href="mailto:{{marca.email}}?subject=Rastreio%20do%20meu%20pedido">Falar por e-mail</a>
+  <a class="sec" href="tel:{{marca.telefoneLink}}">{{marca.telefone}}</a>
+</div>
