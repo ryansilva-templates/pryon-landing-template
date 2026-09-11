@@ -57,7 +57,7 @@ suja, ele se recusa a rodar — sobrescrever arquivo com alteração não commit
 > uma vez, à mão, e depois o fluxo normal funciona:
 >
 > ```bash
-> git remote add upstream https://github.com/ryansilva-templates/pryon-landing-master.git
+> git remote add upstream https://github.com/ryansilva-templates/pryon-landing-template.git
 > git fetch upstream --tags
 > git checkout upstream/main -- tools/atualizar.js
 > node tools/atualizar.js
@@ -120,7 +120,7 @@ index.html, termos.html, privacidade.html, rastrear-pedido.html   (gerados)
 ## Na mão, se preferir
 
 ```bash
-git remote add upstream https://github.com/ryansilva-templates/pryon-landing-master.git
+git remote add upstream https://github.com/ryansilva-templates/pryon-landing-template.git
 git fetch upstream --tags
 
 # o que mudou desde a sua versão

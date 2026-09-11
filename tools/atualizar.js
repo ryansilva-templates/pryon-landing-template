@@ -43,7 +43,7 @@ const path = require('path');
 const fs = require('fs');
 
 const RAIZ = path.join(__dirname, '..');
-const UPSTREAM_PADRAO = 'https://github.com/ryansilva-templates/pryon-landing-master.git';
+const UPSTREAM_PADRAO = 'https://github.com/ryansilva-templates/pryon-landing-template.git';
 
 const NIVEL1 = {
   rotulo: 'SEMPRE SEGURO — documentacao e ferramentas',
